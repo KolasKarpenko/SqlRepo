@@ -85,8 +85,9 @@ Session::Session(MYSQL* connection, const std::string& dbName, const std::string
 
 	if (!exists) {
 		repo::mysql::ZeroSchemaPatch zeroPatch;
-		DataSchemaDeploy::Register(zeroPatch);
-		repo::DataSchemaDeploy::CreateSchema(*this);
+		DataSchemaDeploy zero;
+		zero.Register(zeroPatch);
+		zero.CreateSchema(*this);
 	}
 }
 

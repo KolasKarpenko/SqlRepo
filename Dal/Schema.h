@@ -13,6 +13,8 @@ namespace repo
 {
 namespace schema
 {
+	static DataSchemaDeploy ProductSchema;
+
 	static void RegisterSchema() {
 		TransactionPatch createProductData(201905261113);
 		CreateTablePatch createProductTable("Product");
@@ -21,19 +23,19 @@ namespace schema
 		createProduct.SetValue("name", SqlString("Product1"));
 		createProductData.AddPatch(createProductTable);
 		createProductData.AddPatch(createProduct);
-		DataSchemaDeploy::Register(createProductData);
+		ProductSchema.Register(createProductData);
 
 		CreateTablePatch createInspectionTable(201905261123, "Inspection", "Product");
 		createInspectionTable.AddColumn("name", TableColumnStruct::Type::text, "Inspection", true);
-		DataSchemaDeploy::Register(createInspectionTable);
+		ProductSchema.Register(createInspectionTable);
 
 		CreateTablePatch createRegionTable(201905261135, "Region", "Inspection");
 		createRegionTable.AddColumn("name", TableColumnStruct::Type::text, "Region", true);
-		DataSchemaDeploy::Register(createRegionTable);
+		ProductSchema.Register(createRegionTable);
 
 		AddTableColumnPatch productDescriptionColumn(201905262011, "Product");
 		productDescriptionColumn.AddColumn("description", TableColumnStruct::Type::text);
-		DataSchemaDeploy::Register(productDescriptionColumn);
+		ProductSchema.Register(productDescriptionColumn);
 	}
 }
 }

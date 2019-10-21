@@ -9,11 +9,11 @@ namespace repo
 class DataSchemaDeploy
 {
 public:
-	static void Register(const Patch& patch);
-	static void CreateSchema(repo::ISession& session);
-	static void UpdateSchema(repo::ISession& session);
+	void Register(const Patch& patch);
+	void CreateSchema(repo::ISession& session);
+	void UpdateSchema(repo::ISession& session);
 private:
-	static std::map<int64_t, Json::Value> ms_patches;
+	std::map<int64_t, Json::Value> m_patches;
 };
 
 }

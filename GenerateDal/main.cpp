@@ -21,8 +21,8 @@ int main(int argc, char* argv[])
 		}
 
 		repo::sqlite::Session session = repo::sqlite::Session::Get(argv[1]);
-
-		repo::DataSchemaDeploy::UpdateSchema(session);
+		//TODO Update different schemas with different namespaces
+		repo::schema::ProductSchema.UpdateSchema(session);
 
 		const std::string outPath = argc > 2 ? argv[2] : "./";
 

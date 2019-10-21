@@ -28,8 +28,7 @@ int main(int argc, char* argv[])
 	try {
 		repo::schema::RegisterSchema();
 		repo::mysql::Session s = repo::mysql::Session::Get("localhost", "root", "1111", "test_db", 3306);
-
-		repo::DataSchemaDeploy::UpdateSchema(s);
+		repo::schema::ProductSchema.UpdateSchema(s);
 
 		selectJournal(s);
 	}

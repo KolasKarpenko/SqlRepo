@@ -28,8 +28,7 @@ int main(int argc, char* argv[])
 	try {
 		repo::schema::RegisterSchema();
 		repo::postgresql::Session s = repo::postgresql::Session::Get("user=postgres password=1 host=127.0.0.1 port=5432 dbname=test_db");
-
-		repo::DataSchemaDeploy::UpdateSchema(s);
+		repo::schema::ProductSchema.UpdateSchema(s);
 
 		selectJournal(s);
 	}

@@ -90,8 +90,9 @@ Session::Session(PGconn* connection, const std::string& contextId) :
 
 	if (!exists) {
 		repo::postgresql::ZeroSchemaPatch zeroPatch;
-		DataSchemaDeploy::Register(zeroPatch);
-		repo::DataSchemaDeploy::CreateSchema(*this);
+		DataSchemaDeploy zero;
+		zero.Register(zeroPatch);
+		zero.CreateSchema(*this);
 	}
 }
 

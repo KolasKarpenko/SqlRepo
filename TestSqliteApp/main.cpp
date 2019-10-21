@@ -124,8 +124,7 @@ int main(int argc, char* argv[])
 	try {
 		repo::schema::RegisterSchema();
 		repo::sqlite::Session s = repo::sqlite::Session::Get("test.repo");
-
-		repo::DataSchemaDeploy::UpdateSchema(s);
+		repo::schema::ProductSchema.UpdateSchema(s);
 
 		//insertData(s);
 		//editData(s);

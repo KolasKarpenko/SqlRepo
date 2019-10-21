@@ -117,8 +117,9 @@ Session::Session(const std::string& dbPath, const std::string& contextId) :
 
 	if (!dbExists) try {
 		repo::sqlite::ZeroSchemaPatch zeroPatch;
-		DataSchemaDeploy::Register(zeroPatch);
-		repo::DataSchemaDeploy::CreateSchema(*this);
+		DataSchemaDeploy zero;
+		zero.Register(zeroPatch);
+		zero.CreateSchema(*this);
 	}
 	catch (const std::exception&) {
 		sqlite3_close(db);
