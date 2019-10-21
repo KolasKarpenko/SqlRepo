@@ -1,0 +1,18 @@
+cmake_minimum_required (VERSION 3.0)
+
+project(PostgresSessionLib)
+
+find_package(PostgreSQL REQUIRED)
+
+set(POSTGRESESSIONLIB_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/postgresession)
+file(GLOB POSTGRESESSIONLIB_HEADERS "${POSTGRESESSIONLIB_INCLUDE}/*.h")
+file(GLOB POSTGRESESSIONLIB_SRC "*.cpp")
+
+include_directories(${PostgreSQL_INCLUDE_DIRS})
+include_directories(${JSONCPPLIB_INCLUDE})
+include_directories(${SQLREPOLIB_INCLUDE})
+
+add_library(PostgresSessionLib ${POSTGRESESSIONLIB_SRC} ${POSTGRESESSIONLIB_HEADERS})
+
+set(PostgreSQL_LIBRARIES ${PostgreSQL_LIBRARIES}  PARENT_SCOPE)
+set(POSTGRESESSIONLIB_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)

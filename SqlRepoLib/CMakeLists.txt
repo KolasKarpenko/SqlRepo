@@ -1,0 +1,14 @@
+cmake_minimum_required (VERSION 3.0)
+
+project(SqlRepoLib)
+
+set(SQLREPOLIB_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+file(GLOB SQLREPOLIB_HEADERS "${SQLREPOLIB_INCLUDE}/*.h")
+file(GLOB SQLREPOLIB_SRC "*.cpp")
+
+include_directories(${SQLREPOLIB_INCLUDE})
+include_directories(${JSONCPPLIB_INCLUDE})
+
+add_library(SqlRepoLib ${SQLREPOLIB_SRC} ${SQLREPOLIB_HEADERS})
+
+set(SQLREPOLIB_INCLUDE ${SQLREPOLIB_INCLUDE} PARENT_SCOPE)
