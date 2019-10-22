@@ -1,4 +1,4 @@
-#include "DataSchemaDeploy.h"
+#include "DataSchema.h"
 
 #include <set>
 #include <sstream>
@@ -7,15 +7,18 @@
 
 namespace repo
 {
+DataSchema::DataSchema(const std::string& name) : m_name(name)
+{
+}
 
-void DataSchemaDeploy::Register(const Patch& patch) {
+void DataSchema::Register(const Patch& patch) {
 	const repo::SqlBigInt& version = patch.GetSchemaVersion();
 	if (!version.IsNull()) {
 		m_patches[version.Data()] = patch.ToJson();
 	}
 }
 
-void DataSchemaDeploy::CreateSchema(repo::ISession& session) {
+void DataSchema::CreateSchema(repo::ISession& session) const {
 	for (const auto& pair : m_patches) {
 		std::shared_ptr<Patch> patchPtr = CreatePatch(pair.second);
 		if (patchPtr) {
@@ -24,7 +27,7 @@ void DataSchemaDeploy::CreateSchema(repo::ISession& session) {
 	}
 }
 
-void DataSchemaDeploy::UpdateSchema(repo::ISession& session) {
+void DataSchema::UpdateSchema(repo::ISession& session) const {
 	std::stringstream ss;
 	ss << "select distinct schemaVersion, id";
 	ss << " from private_Journal where schemaVersion is not null order by id;";
@@ -42,6 +45,11 @@ void DataSchemaDeploy::UpdateSchema(repo::ISession& session) {
 			}
 		}
 	}
+}
+
+const std::string& DataSchema::GetName() const
+{
+	return m_name;
 }
 
 }

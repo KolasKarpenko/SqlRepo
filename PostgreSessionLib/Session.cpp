@@ -2,7 +2,7 @@
 
 #include <libpq-fe.h>
 #include <exception>
-#include <DataSchemaDeploy.h>
+#include <DataSchema.h>
 #include <IRow.h>
 #include "postgresession/ZeroSchemaPatch.h"
 
@@ -90,7 +90,7 @@ Session::Session(PGconn* connection, const std::string& contextId) :
 
 	if (!exists) {
 		repo::postgresql::ZeroSchemaPatch zeroPatch;
-		DataSchemaDeploy zero;
+		DataSchema zero;
 		zero.Register(zeroPatch);
 		zero.CreateSchema(*this);
 	}

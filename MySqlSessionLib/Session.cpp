@@ -2,7 +2,7 @@
 
 #include <mysql.h>
 #include <exception>
-#include <DataSchemaDeploy.h>
+#include <DataSchema.h>
 #include <IRow.h>
 #include "mysqlsession/ZeroSchemaPatch.h"
 
@@ -85,7 +85,7 @@ Session::Session(MYSQL* connection, const std::string& dbName, const std::string
 
 	if (!exists) {
 		repo::mysql::ZeroSchemaPatch zeroPatch;
-		DataSchemaDeploy zero;
+		DataSchema zero;
 		zero.Register(zeroPatch);
 		zero.CreateSchema(*this);
 	}

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <TransactionPatch.h>
-#include <DataSchemaDeploy.h>
+#include <DataSchema.h>
 #include <CreateTablePatch.h>
 #include <DropTablePatch.h>
 #include <AddTableColumnPatch.h>
@@ -13,7 +13,8 @@ namespace repo
 {
 namespace schema
 {
-	static DataSchemaDeploy ProductSchema;
+	static DataSchema ProductSchema("ProductSchema");
+	static std::map<std::string, const DataSchema*> AllSchemas;
 
 	static void RegisterSchema() {
 		TransactionPatch createProductData(201905261113);
@@ -36,6 +37,8 @@ namespace schema
 		AddTableColumnPatch productDescriptionColumn(201905262011, "Product");
 		productDescriptionColumn.AddColumn("description", TableColumnStruct::Type::text);
 		ProductSchema.Register(productDescriptionColumn);
+
+		AllSchemas[ProductSchema.GetName()] = &ProductSchema;
 	}
 }
 }

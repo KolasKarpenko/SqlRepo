@@ -3,7 +3,7 @@
 #include <sqlite3.h>
 #include <exception>
 #include <fstream>
-#include <DataSchemaDeploy.h>
+#include <DataSchema.h>
 #include <IRow.h>
 #include "sqlitesession/ZeroSchemaPatch.h"
 
@@ -117,7 +117,7 @@ Session::Session(const std::string& dbPath, const std::string& contextId) :
 
 	if (!dbExists) try {
 		repo::sqlite::ZeroSchemaPatch zeroPatch;
-		DataSchemaDeploy zero;
+		DataSchema zero;
 		zero.Register(zeroPatch);
 		zero.CreateSchema(*this);
 	}

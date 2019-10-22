@@ -12,7 +12,7 @@ This file is auto-generated
 
 namespace repo
 {
-namespace dal
+namespace ProductSchema
 {
 
 class private_Journal
@@ -77,7 +77,6 @@ Product(const repo::IRow& row);
 Product();
 std::string Get_id() const;
 std::string Get_name() const;
-std::string Default_name() const;
 void Set_name(const std::string& value);
 repo::SqlString Get_description() const;
 void Set_description(const repo::SqlString& value);
@@ -112,7 +111,6 @@ std::string Get_id() const;
 std::string Get_parentId() const;
 void Set_parentId(const std::string& value);
 std::string Get_name() const;
-std::string Default_name() const;
 void Set_name(const std::string& value);
 void Save(repo::TransactionPatch& transaction);
 void Delete(repo::TransactionPatch& transaction) const;
@@ -145,7 +143,6 @@ std::string Get_id() const;
 std::string Get_parentId() const;
 void Set_parentId(const std::string& value);
 std::string Get_name() const;
-std::string Default_name() const;
 void Set_name(const std::string& value);
 void Save(repo::TransactionPatch& transaction);
 void Delete(repo::TransactionPatch& transaction) const;
@@ -160,5 +157,5 @@ repo::SqlString m_parentId;
 repo::SqlString m_name;
 };
 
-} //namespace dal
+} //namespace ProductSchema
 } //namespace repo

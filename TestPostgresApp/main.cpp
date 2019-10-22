@@ -5,7 +5,7 @@
 #include <postgresession/Session.h>
 #include <Dal.h>
 #include <Schema.h>
-#include <DataSchemaDeploy.h>
+#include <DataSchema.h>
 #include <TransactionPatch.h>
 #include <PatchFactory.h>
 #include <JsonReader.h>
@@ -14,10 +14,10 @@
 void selectJournal(repo::ISession& s)
 {
 	std::stringstream selectJournal;
-	selectJournal << "select * from " << repo::dal::private_Journal::TableName << " order by id;";
+	selectJournal << "select * from " << repo::ProductSchema::private_Journal::TableName << " order by id;";
 	std::cout << "Journal" << std::endl;
 	s.ExecSql(selectJournal.str().c_str(), [](const repo::IRow& row) {
-		const repo::dal::private_Journal t(row);
+		const repo::ProductSchema::private_Journal t(row);
 		std::cout << "------------------------" << std::endl;
 		std::cout << t.Get_id() << ": " << t.Get_time() << ": " << t.Get_patchJson().Data() << std::endl;
 		});

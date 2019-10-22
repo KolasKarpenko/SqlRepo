@@ -5,7 +5,7 @@ This file is auto-generated
 #include "Dal.h"
 namespace repo
 {
-namespace dal
+namespace ProductSchema
 {
 
 const char* private_Journal::TableName = "private_Journal";
@@ -103,7 +103,6 @@ Product::Product()
 }
 std::string Product::Get_id() const { return m_id.Data(); }
 std::string Product::Get_name() const { return m_name.Data(); }
-std::string Product::Default_name() const { return "Product"; }
 void Product::Set_name(const std::string& value){
 	m_name = value;
 	m_patch->SetValue("name", m_name);
@@ -218,7 +217,6 @@ void Inspection::Set_parentId(const std::string& value){
 	m_patch->SetValue("parentId", m_parentId);
 }
 std::string Inspection::Get_name() const { return m_name.Data(); }
-std::string Inspection::Default_name() const { return "Inspection"; }
 void Inspection::Set_name(const std::string& value){
 	m_name = value;
 	m_patch->SetValue("name", m_name);
@@ -313,7 +311,6 @@ void Region::Set_parentId(const std::string& value){
 	m_patch->SetValue("parentId", m_parentId);
 }
 std::string Region::Get_name() const { return m_name.Data(); }
-std::string Region::Default_name() const { return "Region"; }
 void Region::Set_name(const std::string& value){
 	m_name = value;
 	m_patch->SetValue("name", m_name);
@@ -368,5 +365,5 @@ Region Region::DeepCopy(repo::ISession& session) const
 	return copy;
 }
 
-} //namespace dal
+} //namespace ProductSchema
 } //namespace repo
