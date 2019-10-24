@@ -21,7 +21,7 @@ namespace schema
 		CreateTablePatch createProductTable("Product");
 		createProductTable.AddColumn("name", TableColumnStruct::Type::text, "Product", true);
 		NewObjectPatch createProduct("Product");
-		createProduct.SetValue("name", SqlString("Product1"));
+		createProduct.SetValue("name", SqlString("Product 1"));
 		createProductData.AddPatch(createProductTable);
 		createProductData.AddPatch(createProduct);
 		ProductSchema.Register(createProductData);

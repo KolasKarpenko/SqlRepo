@@ -72,7 +72,7 @@ void copyData(repo::ISession& s)
 void editData(repo::ISession& s)
 {
 	std::stringstream selectProduct1;
-	selectProduct1 << "select * from " << repo::ProductSchema::Product::TableName << " where " << repo::ProductSchema::Product::Field::name << " = 'product 1' limit 1;";
+	selectProduct1 << "select * from " << repo::ProductSchema::Product::TableName << " where " << repo::ProductSchema::Product::Field::name << " = 'Product 1' limit 1;";
 	s.ExecSql(selectProduct1.str().c_str(), [&s](const repo::IRow& row) {
 		repo::TransactionPatch tr;
 		repo::ProductSchema::Product p(row);
@@ -130,7 +130,7 @@ int main(int argc, char* argv[])
 		//editData(s);
 		//copyData(s);
 
-		//selectData(s);
+		selectData(s);
 		selectJournal(s);
 	}
 	catch (const std::exception& e) {

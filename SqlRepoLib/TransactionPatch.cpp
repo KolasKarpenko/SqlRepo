@@ -34,18 +34,19 @@ void TransactionPatch::ToJsonImpl(Json::Value& json) const
 		json = m_patchJsonList[0];
 
 		for (const auto& m : copy.getMemberNames()) {
-			json[m] = copy[m];
+			if (!json.isMember(m)) {
+				json[m] = copy[m];
+			}
 		}
-
-		return;
 	}
-
-	Json::Value list(Json::arrayValue);
-	int i = 0;
-	for (const auto& p : m_patchJsonList) {
-		list[i++] = p;
+	else {
+		Json::Value list(Json::arrayValue);
+		int i = 0;
+		for (const auto& p : m_patchJsonList) {
+			list[i++] = p;
+		}
+		json["list"] = list;
 	}
-	json["list"] = list;
 }
 
 void TransactionPatch::FromJsonImpl(const Json::Value& json)
