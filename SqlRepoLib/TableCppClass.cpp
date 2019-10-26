@@ -227,6 +227,9 @@ std::string TableCppClass::GetCppText(const std::string& headerPath) const
 	ImplementSave(ss);
 	ImplementDelete(ss);
 	ImplementToJson(ss);
+	if (!IsTablePrivate()) {
+		ImplementFromJson(ss);
+	}
 	ImplementCopy(ss);
 	ImplementDeepCopy(ss);
 
@@ -309,6 +312,9 @@ void TableCppClass::Public(std::stringstream& ss) const {
 	SaveMethod(ss);
 	DeleteMethod(ss);
 	ToJsonMethod(ss);
+	if (!IsTablePrivate()) {
+		FromJsonMethod(ss);
+	}
 	CopyMethod(ss);
 	DeepCopyMethod(ss);
 }
@@ -330,6 +336,11 @@ void TableCppClass::DeleteMethod(std::stringstream & ss) const
 void TableCppClass::ToJsonMethod(std::stringstream & ss) const
 {
 	ss << "Json::Value ToJson() const;" << std::endl;
+}
+
+void TableCppClass::FromJsonMethod(std::stringstream& ss) const
+{
+	ss << "void FromJson(const Json::Value& json);" << std::endl;
 }
 
 void TableCppClass::CopyMethod(std::stringstream & ss) const
@@ -411,6 +422,83 @@ void TableCppClass::ImplementToJson(std::stringstream & ss) const
 	}
 
 	ss << "\t" << "return obj;" << std::endl;
+	ss << "}" << std::endl;
+}
+
+void TableCppClass::ImplementFromJson(std::stringstream& ss) const
+{
+	ss << "void " << m_name << "::FromJson(const Json::Value& json)" << std::endl;
+	ss << "{" << std::endl;
+	for (const auto& c : m_columns) {
+		if (c.columnStruct.isPrimaryKey) {
+			ss << "\t" << "if (json.isMember(\"" << c.columnStruct.name << "\")) {" << std::endl;
+			ss << "\t" << "\t" << "const Json::Value& id = json[\"" << c.columnStruct.name << "\"];" << std::endl;
+			ss << "\t" << "\t" << "if (id.isString()){" << std::endl;
+			ss << "\t" << "\t" << "\t" << "this->m_id = id.asString();" << std::endl;
+			ss << "\t" << "\t" << "}" << std::endl;
+			ss << "\t" << "}" << std::endl;
+			continue;
+		}
+
+		ss << "\t" << "if (json.isMember(\"" << c.columnStruct.name << "\")) {" << std::endl;
+		if (
+			c.columnStruct.type == TableColumnStruct::Type::text || 
+			c.columnStruct.type == TableColumnStruct::Type::timestamp ||
+			c.columnStruct.type == TableColumnStruct::Type::blob
+		) {
+			if (c.columnStruct.isNotNull) {
+				ss << "\t" << "\t" << "this->Set_" << c.columnStruct.name << "(json[\"" << c.columnStruct.name << "\"].asString());" << std::endl;
+			}
+			else {
+				ss << "\t" << "\t" << "if (json[\"" << c.columnStruct.name << "\"].isNull()) {" << std::endl;
+				ss << "\t" << "\t" << "\t" << "this->Set_" << c.columnStruct.name << "(nullptr);" << std::endl;
+				ss << "\t" << "\t" << "} else {" << std::endl;
+				ss << "\t" << "\t" << "\t" << "this->Set_" << c.columnStruct.name << "(json[\"" << c.columnStruct.name << "\"].asString());" << std::endl;
+				ss << "\t" << "\t" << "}" << std::endl;
+			}
+		}
+
+		if (c.columnStruct.type == TableColumnStruct::Type::integer) {
+			if (c.columnStruct.isNotNull) {
+				ss << "\t" << "\t" << "this->Set_" << c.columnStruct.name << "(json[\"" << c.columnStruct.name << "\"].asInt());" << std::endl;
+			}
+			else {
+				ss << "\t" << "\t" << "if (json[\"" << c.columnStruct.name << "\"].isNull()) {" << std::endl;
+				ss << "\t" << "\t" << "\t" << "this->Set_" << c.columnStruct.name << "(nullptr);" << std::endl;
+				ss << "\t" << "\t" << "} else {" << std::endl;
+				ss << "\t" << "\t" << "\t" << "this->Set_" << c.columnStruct.name << "(json[\"" << c.columnStruct.name << "\"].asInt());" << std::endl;
+				ss << "\t" << "\t" << "}" << std::endl;
+			}
+		}
+
+		if (c.columnStruct.type == TableColumnStruct::Type::bigint) {
+			if (c.columnStruct.isNotNull) {
+				ss << "\t" << "\t" << "this->Set_" << c.columnStruct.name << "(json[\"" << c.columnStruct.name << "\"].asInt64());" << std::endl;
+			}
+			else {
+				ss << "\t" << "\t" << "if (json[\"" << c.columnStruct.name << "\"].isNull()) {" << std::endl;
+				ss << "\t" << "\t" << "\t" << "this->Set_" << c.columnStruct.name << "(nullptr);" << std::endl;
+				ss << "\t" << "\t" << "} else {" << std::endl;
+				ss << "\t" << "\t" << "\t" << "this->Set_" << c.columnStruct.name << "(json[\"" << c.columnStruct.name << "\"].asInt64());" << std::endl;
+				ss << "\t" << "\t" << "}" << std::endl;
+			}
+		}
+
+		if (c.columnStruct.type == TableColumnStruct::Type::real) {
+			if (c.columnStruct.isNotNull) {
+				ss << "\t" << "\t" << "this->Set_" << c.columnStruct.name << "(json[\"" << c.columnStruct.name << "\"].asDouble());" << std::endl;
+			}
+			else {
+				ss << "\t" << "\t" << "if (json[\"" << c.columnStruct.name << "\"].isNull()) {" << std::endl;
+				ss << "\t" << "\t" << "\t" << "this->Set_" << c.columnStruct.name << "(nullptr);" << std::endl;
+				ss << "\t" << "\t" << "} else {" << std::endl;
+				ss << "\t" << "\t" << "\t" << "this->Set_" << c.columnStruct.name << "(json[\"" << c.columnStruct.name << "\"].asDouble());" << std::endl;
+				ss << "\t" << "\t" << "}" << std::endl;
+			}
+		}
+
+		ss << "\t" << "}" << std::endl;
+	}
 	ss << "}" << std::endl;
 }
 

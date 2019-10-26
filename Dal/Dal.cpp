@@ -146,6 +146,25 @@ Json::Value Product::ToJson() const
 	}
 	return obj;
 }
+void Product::FromJson(const Json::Value& json)
+{
+	if (json.isMember("id")) {
+		const Json::Value& id = json["id"];
+		if (id.isString()){
+			this->m_id = id.asString();
+		}
+	}
+	if (json.isMember("name")) {
+		this->Set_name(json["name"].asString());
+	}
+	if (json.isMember("description")) {
+		if (json["description"].isNull()) {
+			this->Set_description(nullptr);
+		} else {
+			this->Set_description(json["description"].asString());
+		}
+	}
+}
 Product Product::Copy() const {
 	Product copy;
 	copy.Set_name(Get_name());
@@ -255,6 +274,21 @@ Json::Value Inspection::ToJson() const
 	}
 	return obj;
 }
+void Inspection::FromJson(const Json::Value& json)
+{
+	if (json.isMember("id")) {
+		const Json::Value& id = json["id"];
+		if (id.isString()){
+			this->m_id = id.asString();
+		}
+	}
+	if (json.isMember("parentId")) {
+		this->Set_parentId(json["parentId"].asString());
+	}
+	if (json.isMember("name")) {
+		this->Set_name(json["name"].asString());
+	}
+}
 Inspection Inspection::Copy() const {
 	Inspection copy;
 	copy.Set_parentId(Get_parentId());
@@ -348,6 +382,21 @@ Json::Value Region::ToJson() const
 		obj["name"] = m_name.Data();
 	}
 	return obj;
+}
+void Region::FromJson(const Json::Value& json)
+{
+	if (json.isMember("id")) {
+		const Json::Value& id = json["id"];
+		if (id.isString()){
+			this->m_id = id.asString();
+		}
+	}
+	if (json.isMember("parentId")) {
+		this->Set_parentId(json["parentId"].asString());
+	}
+	if (json.isMember("name")) {
+		this->Set_name(json["name"].asString());
+	}
 }
 Region Region::Copy() const {
 	Region copy;

@@ -52,7 +52,6 @@ int main(int argc, char* argv[])
 
 
 			repo::sqlite::Session session = repo::sqlite::Session::Get(schema.first);
-			//TODO Update different schemas with different namespaces
 			schema.second->UpdateSchema(session);
 
 			std::vector<std::string> tableList;

@@ -83,6 +83,7 @@ void Set_description(const repo::SqlString& value);
 void Save(repo::TransactionPatch& transaction);
 void Delete(repo::TransactionPatch& transaction) const;
 Json::Value ToJson() const;
+void FromJson(const Json::Value& json);
 Product Copy() const;
 Product DeepCopy(repo::ISession& s) const;
 private:
@@ -115,6 +116,7 @@ void Set_name(const std::string& value);
 void Save(repo::TransactionPatch& transaction);
 void Delete(repo::TransactionPatch& transaction) const;
 Json::Value ToJson() const;
+void FromJson(const Json::Value& json);
 Inspection Copy() const;
 Inspection DeepCopy(repo::ISession& s) const;
 private:
@@ -147,6 +149,7 @@ void Set_name(const std::string& value);
 void Save(repo::TransactionPatch& transaction);
 void Delete(repo::TransactionPatch& transaction) const;
 Json::Value ToJson() const;
+void FromJson(const Json::Value& json);
 Region Copy() const;
 Region DeepCopy(repo::ISession& s) const;
 private:

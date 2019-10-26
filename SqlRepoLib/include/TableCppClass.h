@@ -45,6 +45,7 @@ private:
 	void SaveMethod(std::stringstream& ss) const;
 	void DeleteMethod(std::stringstream& ss) const;
 	void ToJsonMethod(std::stringstream& ss) const;
+	void FromJsonMethod(std::stringstream& ss) const;
 	void CopyMethod(std::stringstream& ss) const;
 	void DeepCopyMethod(std::stringstream& ss) const;
 	void Private(std::stringstream& ss) const;
@@ -52,6 +53,7 @@ private:
 	void ImplementSave(std::stringstream& ss) const;
 	void ImplementDelete(std::stringstream& ss) const;
 	void ImplementToJson(std::stringstream& ss) const;
+	void ImplementFromJson(std::stringstream& ss) const;
 	void ImplementCopy(std::stringstream& ss) const;
 	void ImplementDeepCopy(std::stringstream& ss) const;
 	bool IsTablePrivate() const;

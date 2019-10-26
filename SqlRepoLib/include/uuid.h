@@ -152,6 +152,13 @@ std::string to_string() const {
 	return s.str();
 }
 
+friend uuid operator+(uuid lhs, const uuid& rhs) {
+	for (int i = 0; i < 16; ++i) {
+		lhs.data[i] += rhs.data[i];
+	}
+	return lhs;
+}
+
 private:
 	std::array<uint8_t, 16> data;
 

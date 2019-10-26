@@ -21,6 +21,7 @@ class Nullable : public ISqlValue
 public:
 	Nullable<T>() : m_isNull(true) {}
 	Nullable<T>(const T& val) : m_data(val), m_isNull(false) {}
+	Nullable<T>(const nullptr_t& val) : m_isNull(true) {}
 
 	const T& Data() const { return m_data; }
 	bool IsNull() const { return m_isNull; }
@@ -43,6 +44,21 @@ public:
 		return null;
 	}
 
+	bool operator==(Nullable<T> const& rhs) {
+		if (m_isNull && rhs.n_isNull) {
+			return true;
+		}
+
+		if (m_isNull != rhs.n_isNull) {
+			return false;
+		}
+
+		return m_data == rhs.m_data;
+	}
+
+	bool operator!= (Nullable<T> const& rhs) {
+		return !(*this == rhs);
+	}
 private:
 	T m_data;
 	bool m_isNull;
