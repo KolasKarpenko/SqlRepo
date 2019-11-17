@@ -1,6 +1,5 @@
 #include "AddTableColumnPatch.h"
 
-#include "SqlTools.h"
 #include "JsonWriter.h"
 #include "JsonReader.h"
 #include "PatchFactory.h"

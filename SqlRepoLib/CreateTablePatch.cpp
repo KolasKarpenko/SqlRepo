@@ -1,6 +1,6 @@
 #include "CreateTablePatch.h"
 
-#include "SqlTools.h"
+#include "Tools.h"
 #include "JsonWriter.h"
 #include "JsonReader.h"
 #include "PatchFactory.h"
@@ -110,10 +110,10 @@ void CreateTablePatch::Apply(ISession& session) const
 	}
 
 	updateChildParent << ") values (";
-	updateChildParent << SqlTools::GetTextValue(m_tableName);
+	updateChildParent << Tools::GetTextValue(m_tableName);
 
 	if (!m_parentTableName.empty()) {
-		updateChildParent << ", " << SqlTools::GetTextValue(m_parentTableName);
+		updateChildParent << ", " << Tools::GetTextValue(m_parentTableName);
 	}
 
 	updateChildParent << ");";

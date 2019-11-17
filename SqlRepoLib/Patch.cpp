@@ -1,6 +1,6 @@
 #include "Patch.h"
 
-#include "SqlTools.h"
+#include "Tools.h"
 #include "JsonWriter.h"
 
 namespace repo
@@ -61,9 +61,9 @@ void Patch::ApplyJournal(ISession& session) const
 		}
 		insertJournal << ")";
 		insertJournal << " values (";
-		insertJournal << SqlTools::GetTextValue(JsonWriter::Write(ToJson()));
+		insertJournal << Tools::GetTextValue(JsonWriter::Write(ToJson()));
 		if (!contextId.empty()) {
-			insertJournal << ", " << SqlTools::GetTextValue(contextId);
+			insertJournal << ", " << Tools::GetTextValue(contextId);
 		}
 		if (!m_schemaVersion.IsNull()) {
 			insertJournal << ", " << m_schemaVersion.Data();

@@ -1,5 +1,6 @@
 #include "DeleteObjectPatch.h"
 
+#include "Tools.h"
 #include "JsonWriter.h"
 #include "JsonReader.h"
 #include "PatchFactory.h"
@@ -51,7 +52,7 @@ void DeleteObjectPatch::Apply(ISession& session) const
 
 	query << "delete from " << m_tableName;
 	query << " where id = ";
-	query << SqlTools::GetTextValue(m_id);
+	query << Tools::GetTextValue(m_id);
 	query << ";";
 
 	session.ExecSql(query.str());

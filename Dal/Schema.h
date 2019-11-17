@@ -17,14 +17,9 @@ namespace schema
 	static std::map<std::string, const DataSchema*> AllSchemas;
 
 	static void RegisterSchema() {
-		TransactionPatch createProductData(201905261113);
-		CreateTablePatch createProductTable("Product");
+		CreateTablePatch createProductTable(201905261113, "Product");
 		createProductTable.AddColumn("name", TableColumnStruct::Type::text, "Product", true);
-		NewObjectPatch createProduct("Product");
-		createProduct.SetValue("name", SqlString("Product 1"));
-		createProductData.AddPatch(createProductTable);
-		createProductData.AddPatch(createProduct);
-		ProductSchema.Register(createProductData);
+		ProductSchema.Register(createProductTable);
 
 		CreateTablePatch createInspectionTable(201905261123, "Inspection", "Product");
 		createInspectionTable.AddColumn("name", TableColumnStruct::Type::text, "Inspection", true);

@@ -1,5 +1,6 @@
 #include "NewObjectPatch.h"
 
+#include "Tools.h"
 #include "uuid.h"
 #include "JsonWriter.h"
 #include "JsonReader.h"
@@ -83,7 +84,7 @@ void NewObjectPatch::Apply(ISession& session) const
 	}
 
 	query << ") values (";
-	query << SqlTools::GetTextValue(m_id);
+	query << Tools::GetTextValue(m_id);
 
 	for (const auto& field : m_fieldValues) {
 		query << ", " << field.second;

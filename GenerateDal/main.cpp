@@ -41,7 +41,9 @@ int main(int argc, char* argv[])
 		fileCpp << "This file is auto-generated" << std::endl;
 		fileCpp << "*/" << std::endl << std::endl;
 		fileCpp << "#include \"" << headerName << "\"" << std::endl;
+		fileCpp << "#include <Tools.h>" << std::endl;
 		fileCpp << "namespace repo" << std::endl;
+		fileCpp << std::endl;
 		fileCpp << "{" << std::endl;
 
 		for (const auto& schema : repo::schema::AllSchemas) {
@@ -49,7 +51,6 @@ int main(int argc, char* argv[])
 			fileH << "{" << std::endl << std::endl;
 			fileCpp << "namespace " << schema.first << std::endl;
 			fileCpp << "{" << std::endl << std::endl;
-
 
 			repo::sqlite::Session session = repo::sqlite::Session::Get(schema.first);
 			schema.second->UpdateSchema(session);

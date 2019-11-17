@@ -3,7 +3,6 @@
 #include <string>
 #include <functional>
 #include <memory>
-#include "SqlTools.h"
 
 namespace repo
 {

@@ -1,6 +1,6 @@
 #include "RenameTablePatch.h"
 
-#include "SqlTools.h"
+#include "Tools.h"
 #include "JsonWriter.h"
 #include "JsonReader.h"
 #include "PatchFactory.h"
@@ -54,12 +54,12 @@ void RenameTablePatch::Apply(ISession& session) const
 
 	std::stringstream updateChildParent;
 	updateChildParent << "update private_ChildToParentNames";
-	updateChildParent << " set child = " << SqlTools::GetTextValue(m_newTableName);
-	updateChildParent << " where child = " << SqlTools::GetTextValue(m_oldTableName) << ";";
+	updateChildParent << " set child = " << Tools::GetTextValue(m_newTableName);
+	updateChildParent << " where child = " << Tools::GetTextValue(m_oldTableName) << ";";
 
 	updateChildParent << "update private_ChildToParentNames";
-	updateChildParent << " set parent = " << SqlTools::GetTextValue(m_newTableName);
-	updateChildParent << " where parent = " << SqlTools::GetTextValue(m_oldTableName) << ";";
+	updateChildParent << " set parent = " << Tools::GetTextValue(m_newTableName);
+	updateChildParent << " where parent = " << Tools::GetTextValue(m_oldTableName) << ";";
 
 	session.ExecSql(alterTable.str());
 	session.ExecSql(updateChildParent.str());

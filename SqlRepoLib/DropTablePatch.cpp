@@ -1,6 +1,6 @@
 #include "DropTablePatch.h"
 
-#include "SqlTools.h"
+#include "Tools.h"
 #include "JsonWriter.h"
 #include "JsonReader.h"
 #include "PatchFactory.h"
@@ -49,7 +49,7 @@ void DropTablePatch::Apply(ISession& session) const
 	deleteTable << "drop table " << m_tableName << ";";
 
 	std::stringstream updateChildParent;
-	updateChildParent << "delete from private_ChildToParentNames where child = " << SqlTools::GetTextValue(m_tableName) << ";";
+	updateChildParent << "delete from private_ChildToParentNames where child = " << Tools::GetTextValue(m_tableName) << ";";
 
 
 	session.ExecSql(deleteTable.str());

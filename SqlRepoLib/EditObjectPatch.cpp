@@ -108,6 +108,11 @@ void EditObjectPatch::Apply(ISession& session) const
 	session.ExecSql(query.str());
 }
 
+void EditObjectPatch::ResetId(const std::string& id)
+{
+	m_id = id;
+}
+
 }
 
 REGISTER_PATCH(repo::EditObjectPatch)

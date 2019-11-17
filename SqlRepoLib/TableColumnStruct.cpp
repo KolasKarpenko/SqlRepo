@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <sstream>
 
-#include "SqlTools.h"
+#include "Tools.h"
 
 namespace repo
 {
@@ -23,7 +23,7 @@ TableColumnStruct::TableColumnStruct(
 	bool isPrimaryKey,
 	bool isUnique
 ) : name(name),
-	type(SqlTools::ToLower(type)),
+	type(Tools::ToLower(type)),
 	defaultValue(defaultValue),
 	isNotNull(isNotNull),
 	isPrimaryKey(isPrimaryKey),

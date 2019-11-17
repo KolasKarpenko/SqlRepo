@@ -3,7 +3,9 @@ This file is auto-generated
 */
 
 #include "Dal.h"
+#include <Tools.h>
 namespace repo
+
 {
 namespace ProductSchema
 {
@@ -112,7 +114,7 @@ void Product::Set_description(const repo::SqlString& value){
 	m_description = value;
 	m_patch->SetValue("description", m_description);
 }
-void Product::Save(repo::TransactionPatch& transaction)
+void Product::Save(repo::TransactionPatch& transaction) const
 {
 	transaction.AddPatch(*m_patch);
 	m_patch->Clear();
@@ -151,7 +153,8 @@ void Product::FromJson(const Json::Value& json)
 	if (json.isMember("id")) {
 		const Json::Value& id = json["id"];
 		if (id.isString()){
-			this->m_id = id.asString();
+			m_id = id.asString();
+			m_patch->ResetId(m_id.Data());
 		}
 	}
 	if (json.isMember("name")) {
@@ -173,36 +176,44 @@ Product Product::Copy() const {
 }
 Product Product::DeepCopy(repo::ISession& session) const
 {
-	std::map<std::string, std::vector<std::pair<std::string, std::string>>> parentIdMap;
+	uuids::uuid incrementUuid = uuids::create();
+	std::map<std::string, std::vector<std::string>> parentIdMap;
 	std::shared_ptr<repo::TransactionPatch> transaction(new repo::TransactionPatch);
-	Product copy = Copy();
-	parentIdMap["Product"] = {std::make_pair(Get_id(), copy.Get_id())};
+	Json::Value asJson = ToJson();
+	Tools::IncrementUuids(asJson, incrementUuid);
+	parentIdMap["Product"] = {Get_id()};
+	Product copy;
+	copy.FromJson(asJson);
 	copy.m_transaction = transaction;
 	{
-	std::vector<std::pair<std::string, std::string>> newParentIdList;
+	std::vector<std::string> newParentIdList;
 	for(const auto& parentId : parentIdMap["Product"]) {
 		std::stringstream selectInspection;
-		selectInspection << "select * from Inspection where parentId = " << SqlTools::GetTextValue(parentId.first);
+		selectInspection << "select * from Inspection where parentId = " << Tools::GetTextValue(parentId);
 		session.ExecSql(selectInspection.str().c_str(), [&](const repo::IRow& row) {
 			Inspection obj(row);
-			Inspection copy = obj.Copy();
-			copy.Set_parentId(parentId.second);
-			newParentIdList.push_back(std::make_pair(obj.Get_id(), copy.Get_id()));
+			Json::Value asJson = obj.ToJson();
+			Tools::IncrementUuids(asJson, incrementUuid);
+			Inspection copy;
+			copy .FromJson(asJson);
+			newParentIdList.push_back(obj.Get_id());
 			copy.Save(*transaction);
 		});
 	}
 	parentIdMap["Inspection"] = newParentIdList;
 	}
 	{
-	std::vector<std::pair<std::string, std::string>> newParentIdList;
+	std::vector<std::string> newParentIdList;
 	for(const auto& parentId : parentIdMap["Inspection"]) {
 		std::stringstream selectRegion;
-		selectRegion << "select * from Region where parentId = " << SqlTools::GetTextValue(parentId.first);
+		selectRegion << "select * from Region where parentId = " << Tools::GetTextValue(parentId);
 		session.ExecSql(selectRegion.str().c_str(), [&](const repo::IRow& row) {
 			Region obj(row);
-			Region copy = obj.Copy();
-			copy.Set_parentId(parentId.second);
-			newParentIdList.push_back(std::make_pair(obj.Get_id(), copy.Get_id()));
+			Json::Value asJson = obj.ToJson();
+			Tools::IncrementUuids(asJson, incrementUuid);
+			Region copy;
+			copy .FromJson(asJson);
+			newParentIdList.push_back(obj.Get_id());
 			copy.Save(*transaction);
 		});
 	}
@@ -240,7 +251,7 @@ void Inspection::Set_name(const std::string& value){
 	m_name = value;
 	m_patch->SetValue("name", m_name);
 }
-void Inspection::Save(repo::TransactionPatch& transaction)
+void Inspection::Save(repo::TransactionPatch& transaction) const
 {
 	transaction.AddPatch(*m_patch);
 	m_patch->Clear();
@@ -279,7 +290,8 @@ void Inspection::FromJson(const Json::Value& json)
 	if (json.isMember("id")) {
 		const Json::Value& id = json["id"];
 		if (id.isString()){
-			this->m_id = id.asString();
+			m_id = id.asString();
+			m_patch->ResetId(m_id.Data());
 		}
 	}
 	if (json.isMember("parentId")) {
@@ -297,21 +309,27 @@ Inspection Inspection::Copy() const {
 }
 Inspection Inspection::DeepCopy(repo::ISession& session) const
 {
-	std::map<std::string, std::vector<std::pair<std::string, std::string>>> parentIdMap;
+	uuids::uuid incrementUuid = uuids::create();
+	std::map<std::string, std::vector<std::string>> parentIdMap;
 	std::shared_ptr<repo::TransactionPatch> transaction(new repo::TransactionPatch);
-	Inspection copy = Copy();
-	parentIdMap["Inspection"] = {std::make_pair(Get_id(), copy.Get_id())};
+	Json::Value asJson = ToJson();
+	Tools::IncrementUuids(asJson, incrementUuid);
+	parentIdMap["Inspection"] = {Get_id()};
+	Inspection copy;
+	copy.FromJson(asJson);
 	copy.m_transaction = transaction;
 	{
-	std::vector<std::pair<std::string, std::string>> newParentIdList;
+	std::vector<std::string> newParentIdList;
 	for(const auto& parentId : parentIdMap["Inspection"]) {
 		std::stringstream selectRegion;
-		selectRegion << "select * from Region where parentId = " << SqlTools::GetTextValue(parentId.first);
+		selectRegion << "select * from Region where parentId = " << Tools::GetTextValue(parentId);
 		session.ExecSql(selectRegion.str().c_str(), [&](const repo::IRow& row) {
 			Region obj(row);
-			Region copy = obj.Copy();
-			copy.Set_parentId(parentId.second);
-			newParentIdList.push_back(std::make_pair(obj.Get_id(), copy.Get_id()));
+			Json::Value asJson = obj.ToJson();
+			Tools::IncrementUuids(asJson, incrementUuid);
+			Region copy;
+			copy .FromJson(asJson);
+			newParentIdList.push_back(obj.Get_id());
 			copy.Save(*transaction);
 		});
 	}
@@ -349,7 +367,7 @@ void Region::Set_name(const std::string& value){
 	m_name = value;
 	m_patch->SetValue("name", m_name);
 }
-void Region::Save(repo::TransactionPatch& transaction)
+void Region::Save(repo::TransactionPatch& transaction) const
 {
 	transaction.AddPatch(*m_patch);
 	m_patch->Clear();
@@ -388,7 +406,8 @@ void Region::FromJson(const Json::Value& json)
 	if (json.isMember("id")) {
 		const Json::Value& id = json["id"];
 		if (id.isString()){
-			this->m_id = id.asString();
+			m_id = id.asString();
+			m_patch->ResetId(m_id.Data());
 		}
 	}
 	if (json.isMember("parentId")) {
@@ -406,10 +425,14 @@ Region Region::Copy() const {
 }
 Region Region::DeepCopy(repo::ISession& session) const
 {
-	std::map<std::string, std::vector<std::pair<std::string, std::string>>> parentIdMap;
+	uuids::uuid incrementUuid = uuids::create();
+	std::map<std::string, std::vector<std::string>> parentIdMap;
 	std::shared_ptr<repo::TransactionPatch> transaction(new repo::TransactionPatch);
-	Region copy = Copy();
-	parentIdMap["Region"] = {std::make_pair(Get_id(), copy.Get_id())};
+	Json::Value asJson = ToJson();
+	Tools::IncrementUuids(asJson, incrementUuid);
+	parentIdMap["Region"] = {Get_id()};
+	Region copy;
+	copy.FromJson(asJson);
 	copy.m_transaction = transaction;
 	return copy;
 }

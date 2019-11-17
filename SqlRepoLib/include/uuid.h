@@ -89,18 +89,19 @@ static uuid from_string(TChar const * const str, size_t const size)
 	std::array<uint8_t, 16> data{ { 0 } };
 
 	if (str == nullptr || size == 0)
-		throw std::runtime_error{ "Wrong uuid format" };
+		return uuid();
 
 	if (str[0] == static_cast<TChar>('{'))
 		hasBraces = 1;
+
 	if (hasBraces && str[size - 1] != static_cast<TChar>('}'))
-		throw std::runtime_error{ "Wrong uuid format" };
-	
+		return uuid();
+
 	for (size_t i = hasBraces; i < size - hasBraces; ++i) {
 		if (str[i] == static_cast<TChar>('-')) continue;
 
 		if (index >= 16 || !detail::is_hex(str[i])) {
-			throw std::runtime_error{ "Wrong uuid format" };
+			return uuid();
 		}
 
 		if (firstDigit) {
@@ -114,7 +115,7 @@ static uuid from_string(TChar const * const str, size_t const size)
 	}
 
 	if (index < 16) {
-		throw std::runtime_error{ "Wrong uuid format" };
+		return uuid();
 	}
 
 	return uuid{ std::cbegin(data), std::cend(data) };

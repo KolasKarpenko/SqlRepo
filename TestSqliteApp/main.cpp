@@ -15,9 +15,19 @@ repo::ProductSchema::Product selectProduct(repo::ISession& s)
 	std::stringstream selectProduct;
 	selectProduct << "select * from " << repo::ProductSchema::Product::TableName << " limit 1;";
 	repo::ProductSchema::Product result;
-	s.ExecSql(selectProduct.str().c_str(), [&result](const repo::IRow& row) {
+	bool hasProduct = false;
+	s.ExecSql(selectProduct.str().c_str(), [&result, &hasProduct](const repo::IRow& row) {
 		result = row;
+		hasProduct = true;
 	});
+
+	if (!hasProduct) {
+		result.Set_name("Product 1");
+		repo::TransactionPatch tr;
+		result.Save(tr);
+		tr.ApplyJournal(s);
+	}
+
 	return result;
 }
 
@@ -130,8 +140,18 @@ int main(int argc, char* argv[])
 		//editData(s);
 		//copyData(s);
 
+		/*
+		repo::sqlite::Session s2 = repo::sqlite::Session::Get("test_deep_copy.repo");
+		repo::schema::ProductSchema.UpdateSchema(s2);
+		auto deepCopy = selectProduct(s).DeepCopy(s);
+		repo::TransactionPatch tr;
+		deepCopy.Save(tr);
+		tr.ApplyJournal(s2);
+		*/
+		
+
 		selectData(s);
-		selectJournal(s);
+		//selectJournal(s);
 	}
 	catch (const std::exception& e) {
 		std::cout << e.what() << std::endl;

@@ -1,6 +1,6 @@
 #include "TableCppClass.h"
 
-#include "SqlTools.h"
+#include "Tools.h"
 
 namespace repo {
 namespace cpp {
@@ -75,7 +75,7 @@ void TableCppClass::Column::ImplementDefaultValue(std::stringstream& ss) const {
 	ss << " " << tableName << "::Default_" << columnStruct.name << "() const { return ";
 
 	if (columnStruct.type == TableColumnStruct::Type::text) {
-		ss << SqlTools::GetCppTextValue(columnStruct.defaultValue);
+		ss << Tools::GetCppTextValue(columnStruct.defaultValue);
 	}
 	else {
 		ss << columnStruct.defaultValue;
@@ -186,7 +186,7 @@ TableCppClass::TableCppClass(ISession& session, const std::string& tableName)
 
 	std::stringstream parentTableQuery;
 	parentTableQuery << "select parent from private_ChildToParentNames";
-	parentTableQuery << " where child = " << SqlTools::GetTextValue(tableName) << ";";
+	parentTableQuery << " where child = " << Tools::GetTextValue(tableName) << ";";
 
 	m_session.ExecSql(parentTableQuery.str().c_str(), [this](const repo::IRow& row) {
 		repo::SqlString parent = row.Data("parent");
@@ -322,7 +322,7 @@ void TableCppClass::Public(std::stringstream& ss) const {
 void TableCppClass::SaveMethod(std::stringstream & ss) const
 {
 	if (!IsTablePrivate()) {
-		ss << "void Save(repo::TransactionPatch& transaction);" << std::endl;
+		ss << "void Save(repo::TransactionPatch& transaction) const;" << std::endl;
 	}
 }
 
@@ -361,8 +361,8 @@ void TableCppClass::Private(std::stringstream& ss) const {
 	ss << "private:" << std::endl;
 
 	if (!IsTablePrivate()) {
-		ss << "std::shared_ptr<repo::EditObjectPatch> m_patch;" << std::endl;
-		ss << "std::shared_ptr<repo::TransactionPatch> m_transaction;" << std::endl;
+		ss << "mutable std::shared_ptr<repo::EditObjectPatch> m_patch;" << std::endl;
+		ss << "mutable std::shared_ptr<repo::TransactionPatch> m_transaction;" << std::endl;
 	}
 
 	for (const auto& c : m_columns) {
@@ -385,7 +385,7 @@ void TableCppClass::ImplementNames(std::stringstream& ss) const {
 void TableCppClass::ImplementSave(std::stringstream & ss) const
 {
 	if (!IsTablePrivate()) {
-		ss << "void " << m_name << "::Save(repo::TransactionPatch& transaction)" << std::endl;
+		ss << "void " << m_name << "::Save(repo::TransactionPatch& transaction) const" << std::endl;
 		ss << "{" << std::endl;
 		ss << "\ttransaction.AddPatch(*m_patch);" << std::endl;
 		ss << "\tm_patch->Clear();" << std::endl;
@@ -434,7 +434,8 @@ void TableCppClass::ImplementFromJson(std::stringstream& ss) const
 			ss << "\t" << "if (json.isMember(\"" << c.columnStruct.name << "\")) {" << std::endl;
 			ss << "\t" << "\t" << "const Json::Value& id = json[\"" << c.columnStruct.name << "\"];" << std::endl;
 			ss << "\t" << "\t" << "if (id.isString()){" << std::endl;
-			ss << "\t" << "\t" << "\t" << "this->m_id = id.asString();" << std::endl;
+			ss << "\t" << "\t" << "\t" << "m_id = id.asString();" << std::endl;
+			ss << "\t" << "\t" << "\t" << "m_patch->ResetId(m_id.Data());" << std::endl;
 			ss << "\t" << "\t" << "}" << std::endl;
 			ss << "\t" << "}" << std::endl;
 			continue;
@@ -535,10 +536,14 @@ void TableCppClass::ImplementDeepCopy(std::stringstream& ss) const
 
 	ss << m_name << " " << m_name << "::DeepCopy(repo::ISession& session) const\n";
 	ss << "{\n";
-	ss << "\tstd::map<std::string, std::vector<std::pair<std::string, std::string>>> parentIdMap;\n";
+	ss << "\tuuids::uuid incrementUuid = uuids::create();\n";
+	ss << "\tstd::map<std::string, std::vector<std::string>> parentIdMap;\n";
 	ss << "\tstd::shared_ptr<repo::TransactionPatch> transaction(new repo::TransactionPatch);\n";
-	ss << "\t" << m_name << " copy = Copy();\n";
-	ss << "\tparentIdMap[\"" << m_name << "\"] = {std::make_pair(Get_id(), copy.Get_id())};\n";
+	ss << "\tJson::Value asJson = ToJson();\n";
+	ss << "\tTools::IncrementUuids(asJson, incrementUuid);\n";
+	ss << "\tparentIdMap[\"" << m_name << "\"] = {Get_id()};\n";
+	ss << "\t" << m_name << " copy;\n";
+	ss << "\tcopy.FromJson(asJson);\n";
 	ss << "\tcopy.m_transaction = transaction;\n";
 
 	while (!parentTableStack.empty()) {
@@ -546,22 +551,24 @@ void TableCppClass::ImplementDeepCopy(std::stringstream& ss) const
 		parentTableStack.pop();
 		std::stringstream selectChildren;
 		selectChildren << "select * from private_ChildToParentNames";
-		selectChildren << " where parent = " << SqlTools::GetTextValue(parentTable);
+		selectChildren << " where parent = " << Tools::GetTextValue(parentTable);
 
 		m_session.ExecSql(selectChildren.str().c_str(), [&](const repo::IRow& row) {
 			ss << "\t{\n";
-			ss << "\tstd::vector<std::pair<std::string, std::string>> newParentIdList;\n";
+			ss << "\tstd::vector<std::string> newParentIdList;\n";
 			ss << "\tfor(const auto& parentId : parentIdMap[\"" << parentTable << "\"]) {\n";
 			const std::string tableName = row.Data("child").Data();
 			std::stringstream selectByParent;
-			selectByParent << "\"select * from " << tableName << " where parentId = \" << SqlTools::GetTextValue(parentId.first)";
+			selectByParent << "\"select * from " << tableName << " where parentId = \" << Tools::GetTextValue(parentId)";
 			ss << "\t\tstd::stringstream select" << tableName << ";\n";
 			ss << "\t\tselect" << tableName << " << " << selectByParent.str() << ";\n";
 			ss << "\t\tsession.ExecSql(select" << tableName << ".str().c_str(), [&](const repo::IRow& row) {\n";
 			ss << "\t\t\t" << tableName << " obj(row);\n";
-			ss << "\t\t\t" << tableName << " copy = obj.Copy();\n";
-			ss << "\t\t\tcopy.Set_parentId(parentId.second);\n";
-			ss << "\t\t\tnewParentIdList.push_back(std::make_pair(obj.Get_id(), copy.Get_id()));\n";
+			ss << "\t\t\tJson::Value asJson = obj.ToJson();\n";
+			ss << "\t\t\tTools::IncrementUuids(asJson, incrementUuid);\n";
+			ss << "\t\t\t" << tableName << " copy;\n";
+			ss << "\t\t\tcopy .FromJson(asJson);\n";
+			ss << "\t\t\tnewParentIdList.push_back(obj.Get_id());\n";
 			ss << "\t\t\tcopy.Save(*transaction);\n";
 			ss << "\t\t});\n";
 			ss << "\t}\n";
