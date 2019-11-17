@@ -539,12 +539,12 @@ void TableCppClass::ImplementDeepCopy(std::stringstream& ss) const
 	ss << "\tuuids::uuid incrementUuid = uuids::create();\n";
 	ss << "\tstd::map<std::string, std::vector<std::string>> parentIdMap;\n";
 	ss << "\tstd::shared_ptr<repo::TransactionPatch> transaction(new repo::TransactionPatch);\n";
-	ss << "\tJson::Value asJson = ToJson();\n";
-	ss << "\tTools::IncrementUuids(asJson, incrementUuid);\n";
 	ss << "\tparentIdMap[\"" << m_name << "\"] = {Get_id()};\n";
-	ss << "\t" << m_name << " copy;\n";
-	ss << "\tcopy.FromJson(asJson);\n";
+	ss << "\t" << m_name << " copy = Copy();\n";
 	ss << "\tcopy.m_transaction = transaction;\n";
+	ss << "\tconst uuids::uuid copyId = uuids::uuid::from_string(Get_id()) + incrementUuid;\n";
+	ss << "\tcopy.m_id = copyId.to_string();\n";
+	ss << "\tcopy.m_patch->ResetId(copy.m_id.Data());\n";
 
 	while (!parentTableStack.empty()) {
 		const std::string parentTable = parentTableStack.top();

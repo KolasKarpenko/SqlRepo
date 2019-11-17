@@ -147,10 +147,11 @@ int main(int argc, char* argv[])
 		repo::TransactionPatch tr;
 		deepCopy.Save(tr);
 		tr.ApplyJournal(s2);
+		selectData(s2);
 		*/
-		
 
 		selectData(s);
+
 		//selectJournal(s);
 	}
 	catch (const std::exception& e) {

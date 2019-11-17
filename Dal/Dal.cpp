@@ -179,12 +179,12 @@ Product Product::DeepCopy(repo::ISession& session) const
 	uuids::uuid incrementUuid = uuids::create();
 	std::map<std::string, std::vector<std::string>> parentIdMap;
 	std::shared_ptr<repo::TransactionPatch> transaction(new repo::TransactionPatch);
-	Json::Value asJson = ToJson();
-	Tools::IncrementUuids(asJson, incrementUuid);
 	parentIdMap["Product"] = {Get_id()};
-	Product copy;
-	copy.FromJson(asJson);
+	Product copy = Copy();
 	copy.m_transaction = transaction;
+	const uuids::uuid copyId = uuids::uuid::from_string(Get_id()) + incrementUuid;
+	copy.m_id = copyId.to_string();
+	copy.m_patch->ResetId(copy.m_id.Data());
 	{
 	std::vector<std::string> newParentIdList;
 	for(const auto& parentId : parentIdMap["Product"]) {
@@ -312,12 +312,12 @@ Inspection Inspection::DeepCopy(repo::ISession& session) const
 	uuids::uuid incrementUuid = uuids::create();
 	std::map<std::string, std::vector<std::string>> parentIdMap;
 	std::shared_ptr<repo::TransactionPatch> transaction(new repo::TransactionPatch);
-	Json::Value asJson = ToJson();
-	Tools::IncrementUuids(asJson, incrementUuid);
 	parentIdMap["Inspection"] = {Get_id()};
-	Inspection copy;
-	copy.FromJson(asJson);
+	Inspection copy = Copy();
 	copy.m_transaction = transaction;
+	const uuids::uuid copyId = uuids::uuid::from_string(Get_id()) + incrementUuid;
+	copy.m_id = copyId.to_string();
+	copy.m_patch->ResetId(copy.m_id.Data());
 	{
 	std::vector<std::string> newParentIdList;
 	for(const auto& parentId : parentIdMap["Inspection"]) {
@@ -428,12 +428,12 @@ Region Region::DeepCopy(repo::ISession& session) const
 	uuids::uuid incrementUuid = uuids::create();
 	std::map<std::string, std::vector<std::string>> parentIdMap;
 	std::shared_ptr<repo::TransactionPatch> transaction(new repo::TransactionPatch);
-	Json::Value asJson = ToJson();
-	Tools::IncrementUuids(asJson, incrementUuid);
 	parentIdMap["Region"] = {Get_id()};
-	Region copy;
-	copy.FromJson(asJson);
+	Region copy = Copy();
 	copy.m_transaction = transaction;
+	const uuids::uuid copyId = uuids::uuid::from_string(Get_id()) + incrementUuid;
+	copy.m_id = copyId.to_string();
+	copy.m_patch->ResetId(copy.m_id.Data());
 	return copy;
 }
 
