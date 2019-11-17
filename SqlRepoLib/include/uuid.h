@@ -82,14 +82,15 @@ void swap(uuid & other)
 template <typename TChar>
 static uuid from_string(TChar const * const str, size_t const size)
 {
+	if (str == nullptr || size < 36 || size > 38) {
+		return uuid();
+	}
+
 	TChar digit = 0;
 	bool firstDigit = true;
 	int hasBraces = 0;
 	size_t index = 0;
 	std::array<uint8_t, 16> data{ { 0 } };
-
-	if (str == nullptr || size == 0)
-		return uuid();
 
 	if (str[0] == static_cast<TChar>('{'))
 		hasBraces = 1;
