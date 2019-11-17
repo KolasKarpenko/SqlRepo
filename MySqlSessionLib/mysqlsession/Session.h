@@ -26,11 +26,6 @@ public:
 
 	virtual const std::string& GetContextId() const override;
 
-	virtual std::string BeginTransaction() override;
-	virtual std::string CommitTransaction() override;
-	virtual std::string RollbackTransaction() override;
-	virtual std::string TextKeyType() override;
-
 private:
 	Session(MYSQL* connection, const std::string& dbName, const std::string& contextId);
 	MYSQL* m_connection;

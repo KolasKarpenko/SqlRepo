@@ -4,6 +4,7 @@ This file is auto-generated
 
 #include "Dal.h"
 #include <Tools.h>
+#include <uuid.h>
 namespace repo
 
 {

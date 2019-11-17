@@ -2,13 +2,17 @@
 
 #include <regex>
 #include <sstream>
+#include <uuid.h>
 
-std::string Tools::GetTextValue(const std::string & str)
+namespace repo
+{
+
+std::string Tools::GetTextValue(const std::string& str)
 {
 	return "'" + EscapeQuotes(str) + "'";
 }
 
-std::string Tools::GetCppTextValue(const std::string & str)
+std::string Tools::GetCppTextValue(const std::string& str)
 {
 	std::string result = str;
 
@@ -21,10 +25,10 @@ std::string Tools::GetCppTextValue(const std::string & str)
 	}
 
 	std::regex reg("\"");
-	return "\"" + std::regex_replace(result, reg, "\\\"") +"\"";
+	return "\"" + std::regex_replace(result, reg, "\\\"") + "\"";
 }
 
-std::string Tools::EscapeQuotes(const std::string & str) {
+std::string Tools::EscapeQuotes(const std::string& str) {
 	std::regex reg("'");
 	return std::regex_replace(str, reg, "''");
 }
@@ -65,4 +69,6 @@ void Tools::IncrementUuids(Json::Value& obj, const uuids::uuid& increment)
 			IncrementUuids(field, increment);
 		}
 	}
+}
+
 }

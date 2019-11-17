@@ -3,6 +3,7 @@
 #include <functional>
 
 #include "IRow.h"
+#include "ISqlDialect.h"
 
 namespace repo
 {
@@ -18,25 +19,30 @@ public:
 	virtual void ExecSql(const std::string& query) = 0;
 	virtual const std::string& GetContextId() const = 0;
 
-	virtual std::string BeginTransaction()
+	std::string BeginTransaction() const
 	{
-		return "begin transaction;";
+		return m_dialect->BeginTransaction();
 	}
 
-	virtual std::string CommitTransaction()
+	std::string CommitTransaction() const
 	{
-		return "commit transaction;";
+		return m_dialect->CommitTransaction();
 	}
 
-	virtual std::string RollbackTransaction()
+	std::string RollbackTransaction() const
 	{
-		return "rollback transaction;";
+		return m_dialect->RollbackTransaction();
 	}
 
-	virtual std::string TextKeyType()
+	ISqlDialectPtr SqlDialect() const
 	{
-		return "text";
+		return m_dialect;
 	}
+	
+protected:
+	ISession(const ISqlDialect* dialect) :m_dialect(dialect) {}
+
+	ISqlDialectPtr m_dialect;
 };
 
 }

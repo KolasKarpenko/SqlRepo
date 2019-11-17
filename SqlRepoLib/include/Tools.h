@@ -5,6 +5,13 @@
 #include <json/json.h>
 #include <uuid.h>
 
+namespace uuids {
+	struct uuid;
+}
+
+namespace repo
+{
+
 class Tools
 {
 public:
@@ -16,4 +23,6 @@ public:
 private:
 	static std::string EscapeQuotes(const std::string& str);
 };
+
+}
 

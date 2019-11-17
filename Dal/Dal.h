@@ -12,6 +12,7 @@ This file is auto-generated
 
 namespace repo
 {
+
 namespace ProductSchema
 {
 

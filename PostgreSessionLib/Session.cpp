@@ -4,6 +4,7 @@
 #include <exception>
 #include <DataSchema.h>
 #include <IRow.h>
+#include <Tools.h>
 #include "postgresession/ZeroSchemaPatch.h"
 
 namespace repo
@@ -24,7 +25,7 @@ public:
 			m_columns.push_back(azColName[i]);
 			m_data.insert(
 				std::make_pair(
-					SqlTools::ToLower(azColName[i]),
+					Tools::ToLower(azColName[i]),
 					argv[i] ? SqlString::FromData(argv[i]) : SqlString::Null()
 				)
 			);
@@ -38,7 +39,7 @@ public:
 
 	virtual SqlString Data(const std::string& columnName) const override
 	{
-		std::map<std::string, SqlString>::const_iterator it = m_data.find(SqlTools::ToLower(columnName));
+		std::map<std::string, SqlString>::const_iterator it = m_data.find(Tools::ToLower(columnName));
 		if (it != m_data.end()) {
 			return it->second;
 		}
@@ -78,6 +79,7 @@ static void clearResult(PGresult* res)
 }
 
 Session::Session(PGconn* connection, const std::string& contextId) :
+	repo::ISession(new repo::ISqlDialect),
 	m_connection(connection),
 	m_contextId(contextId)
 {

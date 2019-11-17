@@ -4,6 +4,7 @@
 #include <exception>
 #include <DataSchema.h>
 #include <IRow.h>
+#include <Tools.h>
 #include "mysqlsession/ZeroSchemaPatch.h"
 
 namespace repo
@@ -24,7 +25,7 @@ public:
 			m_columns.push_back(azColName[i]);
 			m_data.insert(
 				std::make_pair(
-					SqlTools::ToLower(azColName[i]),
+					Tools::ToLower(azColName[i]),
 					argv[i] ? SqlString::FromData(argv[i]) : SqlString::Null()
 				)
 			);
@@ -38,7 +39,7 @@ public:
 
 	virtual SqlString Data(const std::string& columnName) const override
 	{
-		std::map<std::string, SqlString>::const_iterator it = m_data.find(SqlTools::ToLower(columnName));
+		std::map<std::string, SqlString>::const_iterator it = m_data.find(Tools::ToLower(columnName));
 		if (it != m_data.end()) {
 			return it->second;
 		}
@@ -69,9 +70,34 @@ private:
 	std::vector<std::string> m_columns;
 };
 
+class MySqlDialect : public repo::ISqlDialect
+{
+public:
+	std::string BeginTransaction() const override
+	{
+		return "start transaction;";
+	}
+
+	std::string CommitTransaction() const override
+	{
+		return "commit;";
+	}
+
+	std::string RollbackTransaction() const override
+	{
+		return "rollback;";
+	}
+
+	std::string TextKeyType() const override
+	{
+		return "varchar(40)";
+	}
+};
+
 }
 
 Session::Session(MYSQL* connection, const std::string& dbName, const std::string& contextId) :
+	repo::ISession(new MySqlDialect),
 	m_connection(connection),
 	m_contextId(contextId)
 {
@@ -159,26 +185,6 @@ void Session::ExecSql(const std::string& query)
 const std::string& Session::GetContextId() const
 {
 	return m_contextId;
-}
-
-std::string Session::BeginTransaction()
-{
-	return "start transaction;";
-}
-
-std::string Session::CommitTransaction()
-{
-	return "commit;";
-}
-
-std::string Session::RollbackTransaction()
-{
-	return "rollback;";
-}
-
-std::string Session::TextKeyType()
-{
-	return "varchar(40)";
 }
 
 }

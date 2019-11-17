@@ -88,10 +88,10 @@ void CreateTablePatch::Apply(ISession& session) const
 	std::stringstream createTable;
 	createTable << "create table if not exists " << m_tableName;
 	createTable << " (";
-	createTable << "id " << session.TextKeyType() <<" primary key not null unique";
+	createTable << "id " << session.SqlDialect()->TextKeyType() <<" primary key not null unique";
 
 	if (!m_parentTableName.empty()) {
-		createTable << ", parentId " << session.TextKeyType() << " not null";
+		createTable << ", parentId " << session.SqlDialect()->TextKeyType() << " not null";
 	}
 
 	for (const auto& column : m_columns) {

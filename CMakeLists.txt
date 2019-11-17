@@ -15,6 +15,8 @@ add_subdirectory(JsonCppLib)
 add_subdirectory(SqlRepoLib)
 add_subdirectory(SqliteSessionLib)
 
+add_subdirectory(Dal)
+
 if (BUILD_POSTGRE_SESSION)
 	add_subdirectory(PostgreSessionLib)
 	add_subdirectory(TestPostgresApp)
@@ -25,7 +27,6 @@ if (BUILD_MYSQL_SESSION)
 	add_subdirectory(TestMySqlApp)
 endif(BUILD_MYSQL_SESSION)
 
-add_subdirectory(Dal)
 add_subdirectory(GenerateDal)
 
 add_subdirectory(TestSqliteApp)

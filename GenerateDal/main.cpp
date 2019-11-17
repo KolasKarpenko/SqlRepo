@@ -42,6 +42,8 @@ int main(int argc, char* argv[])
 		fileCpp << "*/" << std::endl << std::endl;
 		fileCpp << "#include \"" << headerName << "\"" << std::endl;
 		fileCpp << "#include <Tools.h>" << std::endl;
+		fileCpp << "#include <uuid.h>" << std::endl;
+		fileH << std::endl;
 		fileCpp << "namespace repo" << std::endl;
 		fileCpp << std::endl;
 		fileCpp << "{" << std::endl;

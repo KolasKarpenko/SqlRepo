@@ -95,6 +95,7 @@ void execQuery(sqlite3* db, const char* query, void* ctx = nullptr)
 }
 
 Session::Session(const std::string& dbPath, const std::string& contextId) :
+	ISession(new ISqlDialect()),
 	m_db(nullptr),
 	m_dbPath(dbPath),
 	m_contextId(contextId)
