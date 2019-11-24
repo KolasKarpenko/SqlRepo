@@ -4,7 +4,7 @@ This file is auto-generated
 
 #pragma once
 
-#include <json/json.h>
+#include <IRepoObject.h>
 #include <IRow.h>
 #include <NewObjectPatch.h>
 #include <DeleteObjectPatch.h>
@@ -63,7 +63,7 @@ repo::SqlString m_child;
 repo::SqlString m_parent;
 };
 
-class Product
+class Product : public repo::IRepoObject
 {
 public:
 static const char* TableName;
@@ -81,10 +81,11 @@ std::string Get_name() const;
 void Set_name(const std::string& value);
 repo::SqlString Get_description() const;
 void Set_description(const repo::SqlString& value);
-void Save(repo::TransactionPatch& transaction) const;
-void Delete(repo::TransactionPatch& transaction) const;
-Json::Value ToJson() const;
-void FromJson(const Json::Value& json);
+virtual void Save(repo::TransactionPatch& transaction) const override;
+virtual void Delete(repo::TransactionPatch& transaction) const override;
+virtual Json::Value ToJson() const override;
+std::shared_ptr<repo::EditObjectPatch> GetPatch() const;
+virtual void FromJson(const Json::Value& json) override;
 Product Copy() const;
 Product DeepCopy(repo::ISession& s) const;
 private:
@@ -95,7 +96,7 @@ repo::SqlString m_name;
 repo::SqlString m_description;
 };
 
-class Inspection
+class Inspection : public repo::IRepoObject
 {
 public:
 static const char* TableName;
@@ -114,10 +115,11 @@ std::string Get_parentId() const;
 void Set_parentId(const std::string& value);
 std::string Get_name() const;
 void Set_name(const std::string& value);
-void Save(repo::TransactionPatch& transaction) const;
-void Delete(repo::TransactionPatch& transaction) const;
-Json::Value ToJson() const;
-void FromJson(const Json::Value& json);
+virtual void Save(repo::TransactionPatch& transaction) const override;
+virtual void Delete(repo::TransactionPatch& transaction) const override;
+virtual Json::Value ToJson() const override;
+std::shared_ptr<repo::EditObjectPatch> GetPatch() const;
+virtual void FromJson(const Json::Value& json) override;
 Inspection Copy() const;
 Inspection DeepCopy(repo::ISession& s) const;
 private:
@@ -128,7 +130,7 @@ repo::SqlString m_parentId;
 repo::SqlString m_name;
 };
 
-class Region
+class Region : public repo::IRepoObject
 {
 public:
 static const char* TableName;
@@ -147,10 +149,11 @@ std::string Get_parentId() const;
 void Set_parentId(const std::string& value);
 std::string Get_name() const;
 void Set_name(const std::string& value);
-void Save(repo::TransactionPatch& transaction) const;
-void Delete(repo::TransactionPatch& transaction) const;
-Json::Value ToJson() const;
-void FromJson(const Json::Value& json);
+virtual void Save(repo::TransactionPatch& transaction) const override;
+virtual void Delete(repo::TransactionPatch& transaction) const override;
+virtual Json::Value ToJson() const override;
+std::shared_ptr<repo::EditObjectPatch> GetPatch() const;
+virtual void FromJson(const Json::Value& json) override;
 Region Copy() const;
 Region DeepCopy(repo::ISession& s) const;
 private:

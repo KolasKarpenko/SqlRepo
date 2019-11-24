@@ -1,12 +1,13 @@
 #pragma once
 
 #include "ISession.h"
+#include "ISerializable.h"
 #include <json/json.h>
 
 namespace repo
 {
 
-class Patch
+class Patch : public ISerializable
 {
 public:
 	template<class T>
@@ -17,8 +18,8 @@ public:
 
 	virtual std::string GetType() const = 0;
 
-	Json::Value ToJson() const;
-	void FromJson(const Json::Value& json);
+	virtual Json::Value ToJson() const override;
+	virtual void FromJson(const Json::Value& json) override;
 
 	virtual bool HasChanges() const;
 	const repo::SqlBigInt& GetSchemaVersion() const;

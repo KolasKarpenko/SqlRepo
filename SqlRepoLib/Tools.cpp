@@ -51,12 +51,16 @@ std::vector<std::string> Tools::Split(const std::string& s, char delimiter)
 	return tokens;
 }
 
-void Tools::IncrementUuids(Json::Value& obj, const uuids::uuid& increment)
+void Tools::IncrementUuids(Json::Value& obj, const uuids::uuid& increment, const std::set<uuids::uuid>& includes)
 {
 	if (obj.isString()) {
 		uuids::uuid uuid = uuids::uuid::from_string(obj.asString());
 
-		if (!uuid.is_nil()) {
+		if (!uuid.is_nil()){
+			if (!includes.empty() && includes.count(uuid) == 0) {
+				return;
+			}
+
 			uuid = uuid + increment;
 			obj = uuid.to_string();
 		}
@@ -66,9 +70,10 @@ void Tools::IncrementUuids(Json::Value& obj, const uuids::uuid& increment)
 
 	if (obj.isObject()) {
 		for (auto& field : obj) {
-			IncrementUuids(field, increment);
+			IncrementUuids(field, increment, includes);
 		}
 	}
 }
+
 
 }

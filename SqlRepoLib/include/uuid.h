@@ -161,21 +161,24 @@ friend uuid operator+(uuid lhs, const uuid& rhs) {
 	return lhs;
 }
 
-private:
-	std::array<uint8_t, 16> data;
-
-bool operator==(uuid const & rhs) {
+bool operator==(const uuid & rhs) {
 	return data == rhs.data;
 }
 
-bool operator!= (uuid const& rhs) {
+bool operator!= (const uuid& rhs) {
 	return !(*this == rhs);
 }
 
-bool operator<(uuid const & rhs) {
+bool operator<(const uuid & rhs) {
 	return data < rhs.data;
 }
 
+friend bool operator<(const uuid& lhs, const uuid& rhs) {
+	return lhs.data < rhs.data;
+}
+
+private:
+	std::array<uint8_t, 16> data;
 };
 
 class uuid_system_generator

@@ -149,6 +149,10 @@ Json::Value Product::ToJson() const
 	}
 	return obj;
 }
+std::shared_ptr<repo::EditObjectPatch> Product::GetPatch() const
+{
+	return m_patch;
+}
 void Product::FromJson(const Json::Value& json)
 {
 	if (json.isMember("id")) {
@@ -177,15 +181,15 @@ Product Product::Copy() const {
 }
 Product Product::DeepCopy(repo::ISession& session) const
 {
-	uuids::uuid incrementUuid = uuids::create();
+	std::map<std::string, repo::IRepoObjectPtr> copyObjects;
+	std::map<std::string, Json::Value> copyObjectsJson;
 	std::map<std::string, std::vector<std::string>> parentIdMap;
 	std::shared_ptr<repo::TransactionPatch> transaction(new repo::TransactionPatch);
+	std::shared_ptr<Product> copyPtr(new Product());
+	copyObjectsJson.insert(std::make_pair(Get_id(), ToJson()));
+	copyPtr->m_transaction = transaction;
 	parentIdMap["Product"] = {Get_id()};
-	Product copy = Copy();
-	copy.m_transaction = transaction;
-	const uuids::uuid copyId = uuids::uuid::from_string(Get_id()) + incrementUuid;
-	copy.m_id = copyId.to_string();
-	copy.m_patch->ResetId(copy.m_id.Data());
+	copyObjects.insert(std::make_pair(Get_id(), copyPtr));
 	{
 	std::vector<std::string> newParentIdList;
 	for(const auto& parentId : parentIdMap["Product"]) {
@@ -193,12 +197,9 @@ Product Product::DeepCopy(repo::ISession& session) const
 		selectInspection << "select * from Inspection where parentId = " << Tools::GetTextValue(parentId);
 		session.ExecSql(selectInspection.str().c_str(), [&](const repo::IRow& row) {
 			Inspection obj(row);
-			Json::Value asJson = obj.ToJson();
-			Tools::IncrementUuids(asJson, incrementUuid);
-			Inspection copy;
-			copy .FromJson(asJson);
+			copyObjectsJson.insert(std::make_pair(obj.Get_id(), obj.ToJson()));
+			copyObjects.insert(std::make_pair(obj.Get_id(), new Inspection()));
 			newParentIdList.push_back(obj.Get_id());
-			copy.Save(*transaction);
 		});
 	}
 	parentIdMap["Inspection"] = newParentIdList;
@@ -210,17 +211,26 @@ Product Product::DeepCopy(repo::ISession& session) const
 		selectRegion << "select * from Region where parentId = " << Tools::GetTextValue(parentId);
 		session.ExecSql(selectRegion.str().c_str(), [&](const repo::IRow& row) {
 			Region obj(row);
-			Json::Value asJson = obj.ToJson();
-			Tools::IncrementUuids(asJson, incrementUuid);
-			Region copy;
-			copy .FromJson(asJson);
+			copyObjectsJson.insert(std::make_pair(obj.Get_id(), obj.ToJson()));
+			copyObjects.insert(std::make_pair(obj.Get_id(), new Region()));
 			newParentIdList.push_back(obj.Get_id());
-			copy.Save(*transaction);
 		});
 	}
 	parentIdMap["Region"] = newParentIdList;
 	}
-	return copy;
+	uuids::uuid incrementUuid = uuids::create();
+	std::set<uuids::uuid> allIds;
+	for (const auto& copyObj : copyObjects) {
+		allIds.insert(uuids::uuid::from_string(copyObj.first));
+	}
+	for (auto& copyObj : copyObjects) {
+		Json::Value& asJson = copyObjectsJson[copyObj.first];
+		Tools::IncrementUuids(asJson, incrementUuid, allIds);
+		copyObj.second->FromJson(asJson);
+		if (copyObj.first != Get_id())
+			copyObj.second->Save(*transaction);
+	}
+	return *copyPtr;
 }
 
 const char* Inspection::TableName = "Inspection";
@@ -286,6 +296,10 @@ Json::Value Inspection::ToJson() const
 	}
 	return obj;
 }
+std::shared_ptr<repo::EditObjectPatch> Inspection::GetPatch() const
+{
+	return m_patch;
+}
 void Inspection::FromJson(const Json::Value& json)
 {
 	if (json.isMember("id")) {
@@ -310,15 +324,15 @@ Inspection Inspection::Copy() const {
 }
 Inspection Inspection::DeepCopy(repo::ISession& session) const
 {
-	uuids::uuid incrementUuid = uuids::create();
+	std::map<std::string, repo::IRepoObjectPtr> copyObjects;
+	std::map<std::string, Json::Value> copyObjectsJson;
 	std::map<std::string, std::vector<std::string>> parentIdMap;
 	std::shared_ptr<repo::TransactionPatch> transaction(new repo::TransactionPatch);
+	std::shared_ptr<Inspection> copyPtr(new Inspection());
+	copyObjectsJson.insert(std::make_pair(Get_id(), ToJson()));
+	copyPtr->m_transaction = transaction;
 	parentIdMap["Inspection"] = {Get_id()};
-	Inspection copy = Copy();
-	copy.m_transaction = transaction;
-	const uuids::uuid copyId = uuids::uuid::from_string(Get_id()) + incrementUuid;
-	copy.m_id = copyId.to_string();
-	copy.m_patch->ResetId(copy.m_id.Data());
+	copyObjects.insert(std::make_pair(Get_id(), copyPtr));
 	{
 	std::vector<std::string> newParentIdList;
 	for(const auto& parentId : parentIdMap["Inspection"]) {
@@ -326,17 +340,26 @@ Inspection Inspection::DeepCopy(repo::ISession& session) const
 		selectRegion << "select * from Region where parentId = " << Tools::GetTextValue(parentId);
 		session.ExecSql(selectRegion.str().c_str(), [&](const repo::IRow& row) {
 			Region obj(row);
-			Json::Value asJson = obj.ToJson();
-			Tools::IncrementUuids(asJson, incrementUuid);
-			Region copy;
-			copy .FromJson(asJson);
+			copyObjectsJson.insert(std::make_pair(obj.Get_id(), obj.ToJson()));
+			copyObjects.insert(std::make_pair(obj.Get_id(), new Region()));
 			newParentIdList.push_back(obj.Get_id());
-			copy.Save(*transaction);
 		});
 	}
 	parentIdMap["Region"] = newParentIdList;
 	}
-	return copy;
+	uuids::uuid incrementUuid = uuids::create();
+	std::set<uuids::uuid> allIds;
+	for (const auto& copyObj : copyObjects) {
+		allIds.insert(uuids::uuid::from_string(copyObj.first));
+	}
+	for (auto& copyObj : copyObjects) {
+		Json::Value& asJson = copyObjectsJson[copyObj.first];
+		Tools::IncrementUuids(asJson, incrementUuid, allIds);
+		copyObj.second->FromJson(asJson);
+		if (copyObj.first != Get_id())
+			copyObj.second->Save(*transaction);
+	}
+	return *copyPtr;
 }
 
 const char* Region::TableName = "Region";
@@ -402,6 +425,10 @@ Json::Value Region::ToJson() const
 	}
 	return obj;
 }
+std::shared_ptr<repo::EditObjectPatch> Region::GetPatch() const
+{
+	return m_patch;
+}
 void Region::FromJson(const Json::Value& json)
 {
 	if (json.isMember("id")) {
@@ -426,16 +453,28 @@ Region Region::Copy() const {
 }
 Region Region::DeepCopy(repo::ISession& session) const
 {
-	uuids::uuid incrementUuid = uuids::create();
+	std::map<std::string, repo::IRepoObjectPtr> copyObjects;
+	std::map<std::string, Json::Value> copyObjectsJson;
 	std::map<std::string, std::vector<std::string>> parentIdMap;
 	std::shared_ptr<repo::TransactionPatch> transaction(new repo::TransactionPatch);
+	std::shared_ptr<Region> copyPtr(new Region());
+	copyObjectsJson.insert(std::make_pair(Get_id(), ToJson()));
+	copyPtr->m_transaction = transaction;
 	parentIdMap["Region"] = {Get_id()};
-	Region copy = Copy();
-	copy.m_transaction = transaction;
-	const uuids::uuid copyId = uuids::uuid::from_string(Get_id()) + incrementUuid;
-	copy.m_id = copyId.to_string();
-	copy.m_patch->ResetId(copy.m_id.Data());
-	return copy;
+	copyObjects.insert(std::make_pair(Get_id(), copyPtr));
+	uuids::uuid incrementUuid = uuids::create();
+	std::set<uuids::uuid> allIds;
+	for (const auto& copyObj : copyObjects) {
+		allIds.insert(uuids::uuid::from_string(copyObj.first));
+	}
+	for (auto& copyObj : copyObjects) {
+		Json::Value& asJson = copyObjectsJson[copyObj.first];
+		Tools::IncrementUuids(asJson, incrementUuid, allIds);
+		copyObj.second->FromJson(asJson);
+		if (copyObj.first != Get_id())
+			copyObj.second->Save(*transaction);
+	}
+	return *copyPtr;
 }
 
 } //namespace ProductSchema

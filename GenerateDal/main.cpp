@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 		fileH << "This file is auto-generated" << std::endl;
 		fileH << "*/" << std::endl << std::endl;
 		fileH << "#pragma once" << std::endl << std::endl;
-		fileH << "#include <json/json.h>" << std::endl;
+		fileH << "#include <IRepoObject.h>" << std::endl;
 		fileH << "#include <IRow.h>" << std::endl;
 		fileH << "#include <NewObjectPatch.h>" << std::endl;
 		fileH << "#include <DeleteObjectPatch.h>" << std::endl;

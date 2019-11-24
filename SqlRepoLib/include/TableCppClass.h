@@ -42,6 +42,7 @@ private:
 	void ImplementConstructor(std::stringstream& ss) const;
 	void EndClass(std::stringstream& ss) const;
 	void Public(std::stringstream& ss) const;
+	void GetPatchMethod(std::stringstream& ss) const;
 	void SaveMethod(std::stringstream& ss) const;
 	void DeleteMethod(std::stringstream& ss) const;
 	void ToJsonMethod(std::stringstream& ss) const;
@@ -49,6 +50,7 @@ private:
 	void CopyMethod(std::stringstream& ss) const;
 	void DeepCopyMethod(std::stringstream& ss) const;
 	void Private(std::stringstream& ss) const;
+	void ImplementGetPatchMethod(std::stringstream& ss) const;
 	void ImplementNames(std::stringstream& ss) const;
 	void ImplementSave(std::stringstream& ss) const;
 	void ImplementDelete(std::stringstream& ss) const;
