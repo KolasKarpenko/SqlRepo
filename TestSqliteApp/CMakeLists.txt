@@ -11,4 +11,9 @@ file(GLOB DAL_CPP "${DAL_SRC}/*.cpp")
 file(GLOB DAL_HEADERS "${DAL_SRC}/*.h")
 
 add_executable(TestSqliteApp main.cpp ${DAL_CPP} ${DAL_HEADERS})
-target_link_libraries(TestSqliteApp SqlRepoLib SqliteSessionLib SqliteLib JsonCppLib)
+
+if(WIN32)
+	target_link_libraries(TestSqliteApp SqlRepoLib SqliteSessionLib SqliteLib JsonCppLib)
+else()
+	target_link_libraries(TestSqliteApp SqlRepoLib SqliteSessionLib SqliteLib JsonCppLib pthread dl uuid)
+endif()
